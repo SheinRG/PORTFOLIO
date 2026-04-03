@@ -22,8 +22,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${bangers.variable} ${comicNeue.variable}`}>
-      <body className="antialiased min-h-screen flex flex-col font-comic bg-comicWhite">
+    <html lang="en" className={`${bangers.variable} ${comicNeue.variable}`} suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col font-comic bg-comicWhite" suppressHydrationWarning>
         <ComicHeader />
         <div className="flex-1">
           {children}

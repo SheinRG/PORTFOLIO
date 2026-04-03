@@ -22,14 +22,83 @@ const expCards = [
   { id: 2, accentColor: 'bg-[#6dbbfc]' },
 ];
 
+const MangaPanel = ({ children, image, title, sub, className, side = 'left', delay = 0 }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: side === 'left' ? -100 : 100, rotate: side === 'left' ? -5 : 5 }}
+      whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ type: 'spring', bounce: 0.4, duration: 1, delay }}
+      className={`relative border-[8px] border-comicBlack bg-white shadow-[12px_12px_0_#161616] overflow-hidden group cursor-crosshair ${className}`}
+    >
+      <div className="absolute inset-0 z-0 bg-comicBlack/5 group-hover:bg-transparent transition-colors duration-500"></div>
+      {image && <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" />}
+      
+      <div className="absolute inset-0 z-10 pointer-events-none p-4 flex flex-col justify-end bg-gradient-to-t from-comicBlack/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <h4 className="font-bangers text-2xl text-comicYellow tracking-widest leading-none drop-shadow-[2px_2px_0_#000]">{title}</h4>
+        <p className="font-comic font-bold text-xs text-white uppercase mt-1 tracking-tighter italic">{sub}</p>
+      </div>
+
+      {/* Comic Border Accents */}
+      <div className="absolute top-0 right-0 w-12 h-12 bg-comicBlack rotate-45 translate-x-6 -translate-y-6"></div>
+      <div className="absolute bottom-0 left-0 w-12 h-12 bg-comicBlack rotate-45 -translate-x-6 translate-y-6"></div>
+    </motion.div>
+  );
+};
+
+const SpeechBubble = ({ children, className, side = 'left', delay = 0 }) => (
+  <motion.div
+    initial={{ scale: 0, opacity: 0 }}
+    whileInView={{ scale: 1, opacity: 1 }}
+    viewport={{ once: true }}
+    transition={{ type: 'spring', bounce: 0.6, duration: 0.8, delay: delay + 0.5 }}
+    className={`absolute z-20 bg-white border-4 border-comicBlack p-4 shadow-[4px_4px_0_#161616] max-w-[200px] ${className}`}
+  >
+    <div className={`absolute bottom-[-16px] ${side === 'left' ? 'left-4' : 'right-4'} w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[16px] border-t-comicBlack`}></div>
+    <div className={`absolute bottom-[-10px] ${side === 'left' ? 'left-[18px]' : 'right-[18px]'} w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[12px] border-t-white`}></div>
+    <p className="font-comic font-bold text-sm tracking-tight leading-tight text-comicBlack uppercase italic">{children}</p>
+  </motion.div>
+);
+
+const SoundEffect = ({ children, className, delay = 0 }) => (
+  <motion.div
+    initial={{ scale: 0, rotate: -20, opacity: 0 }}
+    whileInView={{ scale: [0, 1.5, 1], rotate: [-20, 10, 0], opacity: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.6, delay: delay + 0.3 }}
+    className={`absolute z-30 font-bangers text-4xl md:text-6xl tracking-widest italic antialiased drop-shadow-[4px_4px_0_#161616] pointer-events-none ${className}`}
+  >
+    {children}
+  </motion.div>
+);
+
 export default function PortfolioUI() {
   const [projects, setProjects] = useState([]);
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isSecretIdentityOpen, setIsSecretIdentityOpen] = useState(false);
+  const [isPowersOpen, setIsPowersOpen] = useState(false);
   const [isMessageSent, setIsMessageSent] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [actionWords, setActionWords] = useState([]);
+
+  // Trigger floating action words (POW, ZAP, BOOM)
+  const triggerActionWord = (x, y) => {
+    const words = ['POW!', 'ZAP!', 'BOOM!', 'WHAM!', 'KAPOW!'];
+    const newWord = {
+      id: Date.now(),
+      text: words[Math.floor(Math.random() * words.length)],
+      x, y,
+      rotate: Math.random() * 40 - 20
+    };
+    setActionWords(prev => [...prev, newWord]);
+    setTimeout(() => {
+      setActionWords(prev => prev.filter(w => w.id !== newWord.id));
+    }, 1000);
+  };
 
   useEffect(() => {
     Promise.all([
@@ -64,7 +133,45 @@ export default function PortfolioUI() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col gap-10 relative mt-8">
+    <div 
+      className={`min-h-screen transition-colors duration-500 ${darkMode ? 'bg-comicBlack text-white' : 'bg-gray-50 text-comicBlack'}`}
+      onClick={(e) => triggerActionWord(e.clientX, e.clientY)}
+    >
+      {/* Floating Action Words Layer */}
+      <AnimatePresence>
+        {actionWords.map(word => (
+          <motion.div
+            key={word.id}
+            initial={{ scale: 0, opacity: 0, x: word.x - 50, y: word.y - 50 }}
+            animate={{ scale: 1.5, opacity: 1 }}
+            exit={{ scale: 2, opacity: 0 }}
+            className="fixed z-[100] pointer-events-none font-bangers text-4xl md:text-6xl text-comicYellow"
+            style={{ 
+              rotate: word.rotate,
+              textShadow: '4px 4px 0px #FF2E2E, 8px 8px 0px #161616'
+            }}
+          >
+            {word.text}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col gap-10 relative pt-16">
+        
+        {/* Multiverse Toggle */}
+        <div className="absolute top-6 right-8 z-40 flex items-center gap-4">
+          <span className={`font-bangers tracking-tight transition-opacity ${darkMode ? 'opacity-100 text-comicBlue' : 'opacity-40'}`}>NOIR</span>
+          <button 
+            onClick={(e) => { e.stopPropagation(); setDarkMode(!darkMode); }}
+            className={`w-20 h-10 rounded-full border-4 border-comicBlack p-1 transition-all duration-300 relative ${darkMode ? 'bg-comicBlue' : 'bg-comicYellow'}`}
+          >
+            <motion.div 
+              className="w-6 h-6 bg-white border-2 border-comicBlack rounded-full shadow-[2px_2px_0px_rgba(0,0,0,0.2)]"
+              animate={{ x: darkMode ? 40 : 0 }}
+            />
+          </button>
+          <span className={`font-bangers tracking-tight transition-opacity ${!darkMode ? 'opacity-100 text-comicYellow' : 'opacity-40'}`}>GOLDEN</span>
+        </div>
 
       {/* Main Grid Top Row */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -134,10 +241,16 @@ export default function PortfolioUI() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <button className="w-full bg-comicYellow border-4 border-comicBlack py-3 font-bangers text-xl tracking-widest shadow-[4px_4px_0px_#161616] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-3">
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsSecretIdentityOpen(true); }}
+              className="w-full bg-comicYellow border-4 border-comicBlack py-3 font-bangers text-xl tracking-widest shadow-[4px_4px_0px_#161616] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-3"
+            >
               <span className="text-xl">⚙</span> SECRET IDENTITY
             </button>
-            <button className="w-full bg-[#E5E5E5] border-4 border-comicBlack py-3 font-bangers text-xl tracking-widest shadow-[4px_4px_0px_#161616] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-3">
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsPowersOpen(true); }}
+              className="w-full bg-[#E5E5E5] border-4 border-comicBlack py-3 font-bangers text-xl tracking-widest shadow-[4px_4px_0px_#161616] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-3"
+            >
               <span className="text-xl">⚡</span> POWERS &amp; ABILITIES
             </button>
             <button 
@@ -282,53 +395,64 @@ export default function PortfolioUI() {
 
         {/* Experience Cards */}
         <div className="flex flex-col gap-6">
-          {expCards.map((card, idx) => (
+          {experiences.map((exp, idx) => (
             <motion.div
-              key={card.id}
-              className="bg-white border-[6px] border-comicBlack shadow-[6px_6px_0px_#161616] flex flex-col md:flex-row overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+              key={exp._id}
+              className={`${darkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border-[6px] border-comicBlack shadow-[6px_6px_0px_#161616] flex flex-col md:flex-row overflow-hidden group hover:-translate-y-1 transition-transform duration-300`}
               initial={{ opacity: 0, x: idx % 2 === 0 ? -60 : 60 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ type: 'spring', bounce: 0.35, delay: idx * 0.15 }}
             >
-              {/* Photo / Logo placeholder */}
-              <div className={`${card.accentColor} border-r-[6px] border-comicBlack flex-shrink-0 w-full md:w-56 h-48 md:h-auto relative flex flex-col items-center justify-center gap-3 p-6`}>
-                {/* Diagonal hatch bg */}
-                <div className="absolute inset-0 opacity-[0.08]" style={{
+              {/* Specialized 'No Image' Icon Section for Internships */}
+              <div className={`${exp.colorTheme === 'yellow' ? 'bg-comicYellow' : 'bg-comicBlue'} border-r-[6px] border-comicBlack flex-shrink-0 w-full md:w-56 h-48 md:h-auto relative flex flex-col items-center justify-center gap-3 p-6`}>
+                <div className="absolute inset-0 opacity-[0.2]" style={{
                   backgroundImage: 'repeating-linear-gradient(45deg, #161616 0, #161616 1px, transparent 0, transparent 50%)',
                   backgroundSize: '10px 10px',
                 }}></div>
-                {/* Image placeholder circle */}
-                <div className="relative z-10 w-20 h-20 border-[4px] border-dashed border-comicBlack/40 rounded-full flex items-center justify-center bg-white/50">
-                  <svg className="w-8 h-8 text-comicBlack/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 20.25h18A2.25 2.25 0 0023.25 18V6A2.25 2.25 0 0021 3.75H3A2.25 2.25 0 00.75 6v12A2.25 2.25 0 003 20.25z" />
-                  </svg>
+                {/* Comic-style Badge instead of Logo */}
+                <div className="relative z-10 w-24 h-24 border-[6px] border-comicBlack rounded-xl flex items-center justify-center bg-white rotate-3 shadow-[4px_4px_0_#161616]">
+                  <span className="font-bangers text-5xl text-comicBlack">
+                    {exp.title.includes('SOFTWARE') ? '👾' : '🧠'}
+                  </span>
                 </div>
-                <span className="relative z-10 font-bangers text-xs tracking-widest text-comicBlack/40 uppercase">Company Logo</span>
-                {/* Corner accent */}
-                <div className="absolute top-3 left-3 font-bangers text-xs tracking-widest text-comicBlack/30">#{String(card.id).padStart(2,'0')}</div>
+                <div className="relative z-10 bg-comicBlack text-white px-3 py-1 font-bangers text-xs tracking-widest transform -rotate-2">
+                  LEVEL {idx + 1}
+                </div>
               </div>
 
               {/* Text content area */}
               <div className="flex-1 p-8 flex flex-col gap-4 justify-center">
-                {/* Title placeholder */}
-                <div className="flex flex-col gap-3">
-                  <div className="h-7 w-3/4 bg-comicBlack/[0.06] border-2 border-dashed border-comicBlack/20 rounded"></div>
-                  <div className="h-4 w-1/3 bg-comicBlack/[0.04] border border-dashed border-comicBlack/15 rounded"></div>
+                <div>
+                  <h3 className="font-bangers text-3xl tracking-wide text-comicRed mb-1">{exp.title}</h3>
+                  <p className={`font-comic font-bold text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-tight`}>Active Mission Profile</p>
                 </div>
-                {/* Description placeholder lines */}
-                <div className="flex flex-col gap-2 mt-2">
-                  <div className="h-3 w-full bg-comicBlack/[0.04] border border-dashed border-comicBlack/10 rounded"></div>
-                  <div className="h-3 w-5/6 bg-comicBlack/[0.04] border border-dashed border-comicBlack/10 rounded"></div>
-                  <div className="h-3 w-4/6 bg-comicBlack/[0.04] border border-dashed border-comicBlack/10 rounded"></div>
-                </div>
-                {/* Tag placeholders */}
-                <div className="flex gap-2 mt-3">
-                  {[1,2,3].map(t => (
-                    <div key={t} className="h-6 w-16 bg-comicBlack/[0.05] border-2 border-dashed border-comicBlack/15 rounded-full"></div>
-                  ))}
-                </div>
-                <p className="font-bangers text-xs tracking-widest text-comicBlack/20 uppercase mt-1">Content coming soon...</p>
+                
+                <p className={`font-comic font-bold text-lg leading-tight ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                  {exp.description}
+                </p>
+
+                {/* Projects done during internship */}
+                {exp.projects && exp.projects.length > 0 && (
+                  <div className="flex flex-col gap-2 mt-2">
+                    <span className="font-bangers text-sm tracking-widest text-comicBlue">MISSION ACCOMPLISHED:</span>
+                    <div className="flex flex-wrap gap-2">
+                      {exp.projects.map(p => (
+                        <span key={p} className="bg-transparent border-2 border-dashed border-comicBlack/30 px-3 py-1 font-comic font-bold text-xs">
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Certificate Link */}
+                {exp.certificateUrl && (
+                  <a href={exp.certificateUrl} target="_blank" rel="noopener noreferrer" 
+                     className="self-start mt-2 bg-comicBlack text-white px-4 py-2 font-bangers tracking-widest text-sm hover:bg-comicRed transition-colors">
+                    📜 VIEW CERTIFICATE
+                  </a>
+                )}
               </div>
             </motion.div>
           ))}
@@ -512,6 +636,135 @@ export default function PortfolioUI() {
         )}
       </AnimatePresence>
 
+      {/* ═══════════════════════════════════════════════════ */}
+      {/* SECRET IDENTITY MODAL (ABOUT ME)                   */}
+      {/* ═══════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {isSecretIdentityOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          >
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsSecretIdentityOpen(false)}></div>
+            <motion.div
+              className={`relative ${darkMode ? 'bg-[#1a1a1a] text-white' : 'bg-white text-comicBlack'} border-8 border-comicBlack shadow-[15px_15px_0px_#FFC82C] max-w-2xl w-full z-10 overflow-hidden`}
+              initial={{ scale: 0.8, y: 50 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, y: 50 }}
+            >
+              <div className="bg-comicYellow p-6 border-b-6 border-comicBlack flex justify-between items-center">
+                <h2 className="font-bangers text-4xl text-comicBlack tracking-widest">AGENT DOSSIER: RAGHAV</h2>
+                <button onClick={() => setIsSecretIdentityOpen(false)} className="bg-comicBlack text-white font-bangers text-xl w-10 h-10 border-2 border-white">✕</button>
+              </div>
+              <div className="p-8 flex flex-col gap-6">
+                <div className="flex gap-6 items-start">
+                  <div className="w-32 h-32 border-4 border-comicBlack bg-gray-200 flex-shrink-0 rotate-2 overflow-hidden shadow-[4px_4px_0_#161616]">
+                    <img src="/profile.jpg" alt="Agent Profile" className="w-full h-full object-cover scale-110" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bangers text-2xl text-comicBlue mb-2 uppercase italic tracking-tighter">"The Code-Squashing Avenger"</p>
+                    <p className="font-comic font-bold text-lg leading-snug">
+                      A high-octane Fullstack Developer with a passion for building cinematic, interactive web experiences. 
+                      Focused on merging the art of storytelling with the precision of engineering.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <div className="border-4 border-dashed border-comicBlack/20 p-4">
+                    <span className="font-bangers text-xs tracking-widest text-comicRed block mb-1">CURRENT STATUS</span>
+                    <p className="font-comic font-bold text-sm">Building the future at the intersection of AI & UI.</p>
+                  </div>
+                  <div className="border-4 border-dashed border-comicBlack/20 p-4">
+                    <span className="font-bangers text-xs tracking-widest text-comicRed block mb-1">MISSION LOG</span>
+                    <p className="font-comic font-bold text-sm">150+ Technical Challenges Crushed. Multiple Successful Deployments.</p>
+                  </div>
+                </div>
+                <div className="bg-gray-100 dark:bg-gray-800 p-4 border-4 border-comicBlack border-double">
+                  <p className="font-comic font-bold text-base leading-relaxed italic text-center">
+                    "I don't just write code; I craft digital narratives that resonate. Every bug squashed is a step toward a more seamless multiverse."
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══════════════════════════════════════════════════ */}
+      {/* POWERS & ABILITIES MODAL (SKILLS)                  */}
+      {/* ═══════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {isPowersOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          >
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsPowersOpen(false)}></div>
+            <motion.div
+              className={`relative ${darkMode ? 'bg-[#1a1a1a] text-white' : 'bg-white text-comicBlack'} border-8 border-comicBlack shadow-[15px_15px_0px_#FF2E2E] max-w-2xl w-full z-10 overflow-hidden`}
+              initial={{ scale: 0.8, rotate: 2 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0.8, rotate: -2 }}
+            >
+              <div className="bg-comicRed p-6 border-b-6 border-comicBlack flex justify-between items-center">
+                <h2 className="font-bangers text-4xl text-white tracking-widest" style={{ textShadow: '3px 3px 0px #161616' }}>POWERS & ABILITIES</h2>
+                <button onClick={() => setIsPowersOpen(false)} className="bg-comicBlack text-white font-bangers text-xl w-10 h-10 border-2 border-white">✕</button>
+              </div>
+              <div className="p-8 flex flex-col gap-8">
+                {/* DSA Power Card */}
+                <div className="bg-comicYellow border-4 border-comicBlack p-6 shadow-[6px_6px_0px_#161616] transform rotate-[-1deg]">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="font-bangers text-2xl text-comicBlack">ALGORITHMIC MASTERY</span>
+                    <span className="bg-comicBlack text-white px-3 py-1 font-bangers text-xl">150+</span>
+                  </div>
+                  <div className="w-full bg-white h-6 border-4 border-comicBlack relative overflow-hidden">
+                    <motion.div 
+                      className="absolute top-0 left-0 bottom-0 bg-comicBlue" 
+                      initial={{ width: 0 }} animate={{ width: '85%' }} transition={{ duration: 1.5, delay: 0.2 }}
+                    />
+                  </div>
+                  <p className="font-comic font-bold text-xs mt-3 text-comicBlack/70 uppercase tracking-widest">LeetCode Challenges Crushed in the Digital Arena</p>
+                </div>
+
+                {/* AI & Tech Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-4">
+                    <span className="font-bangers text-xl text-comicRed">AI AUGMENTATION</span>
+                    <div className="flex flex-wrap gap-2">
+                      {['LLMs', 'TensorFlow', 'Neural Nets', 'LangChain'].map(tech => (
+                        <span key={tech} className={`px-3 py-1 border-2 border-comicBlack font-comic font-bold text-xs uppercase ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="font-comic font-bold text-sm italic">Practicing advanced AI integration for intelligent mission automation.</p>
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <span className="font-bangers text-xl text-comicBlue">TECH ARSENAL</span>
+                    <div className="flex flex-wrap gap-2">
+                      {['React', 'Next.js', 'Node.js', 'Python', 'Tailwind', 'MongoDB'].map(tech => (
+                        <span key={tech} className={`px-3 py-1 border-2 border-comicBlack font-comic font-bold text-xs uppercase ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Training Stats */}
+                <div className="bg-comicBlue/10 p-4 border-4 border-dotted border-comicBlue flex items-center justify-around">
+                  <div className="text-center">
+                    <span className="font-bangers text-3xl block text-comicBlue">100%</span>
+                    <span className="font-bangers text-xs tracking-widest text-comicBlue opacity-60">DETERMINATION</span>
+                  </div>
+                  <div className="text-center">
+                    <span className="font-bangers text-3xl block text-comicRed">∞</span>
+                    <span className="font-bangers text-xs tracking-widest text-comicRed opacity-60">IMAGINATION</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
-  );
+  </div>
+);
 }
