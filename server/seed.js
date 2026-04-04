@@ -14,17 +14,18 @@ const seedData = async () => {
 
     await Project.create([
       {
-        title: "PROJECT 01: AI NEXUS",
+        title: "IMAGIX",
         chapterNumber: "CHAPTER 1",
-        description: "A high-performance neural network designed to identify and eliminate UI bugs before they reach production. It uses a bespoke attention mechanism for pinpoint accuracy.",
-        techStack: ["PYTHON", "TENSORFLOW", "FASTAPI"],
-        tags: ["LLM", "OPS"],
-        imageUrl: "https://res.cloudinary.com/dzvk7f4jx/image/upload/v1/projects/ai-nexus.jpg", // Placeholder URL structure
-        githubUrl: "https://github.com/raghav/ai-nexus",
-        liveUrl: "https://ai-nexus.demo"
+        description: "A powerful AI-driven image generation platform that transforms text prompts into stunning visuals. Leveraging cutting-edge generative models to create artwork, designs, and photorealistic images from natural language descriptions.",
+        techStack: ["NEXT.JS", "AI/ML", "TAILWIND"],
+        tags: ["AI", "IMAGE-GEN"],
+        imageUrl: "/images/imagix-cover.png",
+        detailImageUrl: "/images/imagix-detail.png",
+        githubUrl: "https://github.com/SheinRG/imagix",
+        liveUrl: "https://imagix-three.vercel.app/"
       },
       {
-        title: "PROJECT 02: MARKET MANIA",
+        title: "MARKET MANIA",
         chapterNumber: "CHAPTER 2",
         description: "A blazingly fast e-commerce engine optimized for high-concurrency event-driven sales. Features a custom comic-book UI with a seamless Stripe integration.",
         techStack: ["NEXT.JS", "TAILWIND", "REDIS"],
@@ -34,7 +35,7 @@ const seedData = async () => {
         liveUrl: "https://market-mania.demo"
       },
       {
-        title: "PROJECT 03: DATA PRISM",
+        title: "DATA PRISM",
         chapterNumber: "CHAPTER 3",
         description: "A real-time data visualization platform that turns complex metrics into stunning interactive comic graphs. Used by heroes across the digital multiverse.",
         techStack: ["D3.JS", "TYPESCRIPT", "AWS LAMBDA"],
@@ -47,14 +48,18 @@ const seedData = async () => {
 
     await Experience.create([
       {
-        title: "LEAD ENGINEER: XYZ CORP.",
-        description: "Spearheaded the transformation of a monolithic legacy system into a high-octane microservices architecture. Reduced technical debt by 40%.",
-        colorTheme: "blue"
+        title: "SOFTWARE ENGINEERING INTERN: TECH-TITANS HQ",
+        description: "Infiltrated the front-lines of a fast-paced development squad. Mastered the art of high-performance UI architecture and squashed legacy dependencies with precision.",
+        projects: ["Comic-Style Dashboard Prototype", "Real-time Mission Tracker"],
+        certificateUrl: "https://certificates.demo/internship-01",
+        colorTheme: "yellow"
       },
       {
-        title: "OPEN SOURCE AVENGER",
-        description: "Contributed over 50+ PRs to major open-source projects including React and Framer Motion. Championing the developer community one bug at a time.",
-        colorTheme: "yellow"
+        title: "AI/ML DEVELOPMENT INTERN: NEURAL NEXUS",
+        description: "Harnessed the power of LLMs and neural architectures to automate mission-critical analysis. Training advanced models to recognize technical debt at a glance.",
+        projects: ["Neural Bug-Squasher API", "Multiverse Sentiment Analyzer"],
+        certificateUrl: "https://certificates.demo/internship-02",
+        colorTheme: "blue"
       }
     ]);
 

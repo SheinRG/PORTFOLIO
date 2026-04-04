@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+frontend/node_modules/
+server/node_modules/
+
+# Next.js build
+frontend/.next/
+frontend/out/
+
+# Environment files
+**/ .env
+**/ .env.local
+**/ .env.*.local
+
+# OS files
+.DS_Store
+**/.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Git ignore from subfolders (merged)
+frontend/.gitignore
+server/.gitignore

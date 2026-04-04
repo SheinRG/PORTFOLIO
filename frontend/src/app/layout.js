@@ -2,6 +2,7 @@ import { Bangers, Comic_Neue } from "next/font/google";
 import "./globals.css";
 import ComicHeader from "../components/ComicHeader";
 import ComicFooter from "../components/ComicFooter";
+import { ThemeProvider } from "../components/ThemeProvider";
 
 const bangers = Bangers({
   weight: "400",
@@ -23,12 +24,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${bangers.variable} ${comicNeue.variable}`} suppressHydrationWarning>
-      <body className="antialiased min-h-screen flex flex-col font-comic bg-comicWhite" suppressHydrationWarning>
-        <ComicHeader />
-        <div className="flex-1">
-          {children}
-        </div>
-        <ComicFooter />
+      <body className="antialiased min-h-screen flex flex-col font-comic bg-background text-foreground transition-colors duration-300" suppressHydrationWarning>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <ComicHeader />
+          <div className="flex-1">
+            {children}
+          </div>
+          <ComicFooter />
+        </ThemeProvider>
       </body>
     </html>
   );
