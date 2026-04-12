@@ -1,7 +1,12 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import dns from 'dns';
 import Project from './models/Project.js';
 import Experience from './models/Experience.js';
+
+// Fix for MongoDB Atlas ECONNREFUSED on some systems
+dns.setDefaultResultOrder('ipv4first');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 dotenv.config();
 
@@ -25,24 +30,25 @@ const seedData = async () => {
         liveUrl: "https://imagix-three.vercel.app/"
       },
       {
-        title: "MARKET MANIA",
+        title: "OIRION AI",
         chapterNumber: "CHAPTER 2",
-        description: "A blazingly fast e-commerce engine optimized for high-concurrency event-driven sales. Features a custom comic-book UI with a seamless Stripe integration.",
-        techStack: ["NEXT.JS", "TAILWIND", "REDIS"],
-        tags: ["ECOMMERCE", "STRIPE"],
-        imageUrl: "https://res.cloudinary.com/dzvk7f4jx/image/upload/v1/projects/market-mania.jpg",
-        githubUrl: "https://github.com/raghav/market-mania",
-        liveUrl: "https://market-mania.demo"
+        description: "An AI-powered interview coaching platform that simulates real interview scenarios with voice-based conversational AI. Features real-time speech-to-text, intelligent follow-up questions, STAR method evaluation, and comprehensive performance feedback to help candidates ace their interviews.",
+        techStack: ["REACT", "TAILWIND", "FRAMER MOTION", "EXPRESS", "MONGODB", "GROQ API", "ELEVENLABS TTS"],
+        tags: ["AI", "FULLSTACK", "VOICE-AI"],
+        imageUrl: "/images/orion-ai-cover.png",
+        detailImageUrl: "/images/orion-ai-cover.png",
+        githubUrl: "https://github.com/SheinRG/didallfornothing-",
+        liveUrl: "https://didallfornothing-client.vercel.app"
       },
       {
-        title: "DATA PRISM",
+        title: "COMING SOON",
         chapterNumber: "CHAPTER 3",
-        description: "A real-time data visualization platform that turns complex metrics into stunning interactive comic graphs. Used by heroes across the digital multiverse.",
-        techStack: ["D3.JS", "TYPESCRIPT", "AWS LAMBDA"],
-        tags: ["BI", "DATAVIZ"],
-        imageUrl: "https://res.cloudinary.com/dzvk7f4jx/image/upload/v1/projects/data-prism.jpg",
-        githubUrl: "https://github.com/raghav/data-prism",
-        liveUrl: "https://data-prism.demo"
+        description: "The next big project is currently being forged in the lab. Stay tuned — something epic is on the way that will push the boundaries of what's possible.",
+        techStack: [],
+        tags: ["TBA"],
+        imageUrl: "",
+        githubUrl: "",
+        liveUrl: ""
       }
     ]);
 

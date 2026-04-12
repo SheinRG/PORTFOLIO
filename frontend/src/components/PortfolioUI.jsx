@@ -103,6 +103,10 @@ export default function PortfolioUI() {
   };
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     Promise.all([
       fetch('http://localhost:5001/api/projects').then(res => res.json()).catch(() => []),
       fetch('http://localhost:5001/api/experiences').then(res => res.json()).catch(() => [])
@@ -110,7 +114,6 @@ export default function PortfolioUI() {
       setProjects(Array.isArray(projData) ? projData : []);
       setExperiences(Array.isArray(expData) ? expData : []);
       setLoading(false);
-      setMounted(true);
     });
   }, []);
 
@@ -311,6 +314,7 @@ export default function PortfolioUI() {
           {mangaPanels.map((panel, idx) => {
             // Check if there's a matching project from the API
             const project = projects[idx] || null;
+            const isComingSoon = project && project.title === 'COMING SOON';
 
             return (
               <motion.div
@@ -322,10 +326,45 @@ export default function PortfolioUI() {
                 viewport={{ once: true }}
                 transition={{ type: 'spring', bounce: 0.4, delay: 0.1 + idx * 0.08 }}
                 whileHover={{ scale: 0.97 }}
-                onClick={() => project && setSelectedProject(project)}
+                onClick={() => project && !isComingSoon && setSelectedProject(project)}
               >
-                {/* If a project exists, show its thumbnail */}
-                {project ? (
+                {/* If project is 'COMING SOON', show special overlay */}
+                {isComingSoon ? (
+                  <>
+                    {/* Diagonal stripe pattern */}
+                    <div className="absolute inset-0 opacity-[0.06]" style={{
+                      backgroundImage: 'repeating-linear-gradient(45deg, #161616 0, #161616 1px, transparent 0, transparent 50%)',
+                      backgroundSize: '12px 12px',
+                    }}></div>
+
+                    {/* Pulsing center content */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                      <motion.div
+                        className="bg-comicBlack text-comicYellow font-bangers text-3xl md:text-4xl px-8 py-4 border-4 border-comicYellow shadow-[6px_6px_0px_rgba(255,200,44,0.3)] transform rotate-[-2deg] tracking-widest"
+                        animate={{ scale: [1, 1.05, 1], rotate: [-2, 1, -2] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        🚧 COMING SOON
+                      </motion.div>
+                      <p className="font-comic font-bold text-sm text-foreground/50 uppercase tracking-tight italic max-w-[200px] text-center">
+                        Something epic is being forged...
+                      </p>
+                    </div>
+
+                    {/* Corner decorations */}
+                    <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-comicBlack/20"></div>
+                    <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-comicBlack/20"></div>
+                    <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-comicBlack/20"></div>
+                    <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-comicBlack/20"></div>
+
+                    {/* Chapter label */}
+                    <div className="absolute bottom-3 left-3">
+                      <div className="bg-comicBlack text-white font-bangers text-xs px-2 py-0.5 inline-block tracking-widest opacity-40">
+                        {panel.label}
+                      </div>
+                    </div>
+                  </>
+                ) : project ? (
                   <>
                     {project.imageUrl && (
                       <img 
@@ -631,7 +670,7 @@ export default function PortfolioUI() {
                     </div>
                     <button 
                       type="submit"
-                      className="mt-4 bg-primary text-primary-foreground border-4 border-comicBlack py-5 font-bangers text-3xl tracking-widest shadow-[6px_6px_0px_var(--border)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all uppercase"
+                      // className="mt-4 bg-primary text-primary-foreground border-4 border-comicBlack py-5 font-bangers text-3xl tracking-widest shadow-[6px_6px_0px_var(--border)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all uppercase"
                     >
                       SEND TRANSMISSION! 🚀
                     </button>
