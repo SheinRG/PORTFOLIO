@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hero Portfolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#cfc6ab",
+                        "tertiary-fixed": "#ffdad3",
+                        "tertiary": "#ba1c00",
+                        "tertiary-container": "#ffd5cd",
+                        "secondary": "#0040e0",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#efefff",
+                        "inverse-primary": "#e3c600",
+                        "surface-container": "#f0edee",
+                        "tertiary-fixed-dim": "#ffb4a5",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#3e0400",
+                        "secondary-fixed": "#dde1ff",
+                        "on-tertiary-container": "#c01e00",
+                        "surface-dim": "#dcd9da",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1b1b1c",
+                        "on-surface-variant": "#4c4732",
+                        "on-secondary-fixed-variant": "#0035be",
+                        "surface-variant": "#e5e2e3",
+                        "secondary-fixed-dim": "#b8c3ff",
+                        "surface-container-highest": "#e5e2e3",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f3f0f1",
+                        "surface": "#fcf8f9",
+                        "on-secondary-fixed": "#001356",
+                        "primary-container": "#ffde00",
+                        "surface-tint": "#6d5e00",
+                        "on-primary-container": "#716200",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#fcf8f9",
+                        "on-tertiary-fixed-variant": "#8e1300",
+                        "on-primary-fixed-variant": "#524600",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#eae7e8",
+                        "primary-fixed": "#ffe24a",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#e3c600",
+                        "outline": "#7d775f",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#2e5bff",
+                        "primary": "#6d5e00",
+                        "surface-bright": "#fcf8f9",
+                        "surface-container-low": "#f6f3f4",
+                        "on-background": "#1b1b1c",
+                        "on-primary-fixed": "#211b00",
+                        "inverse-surface": "#303031"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "border-thin": "1px",
+                        "margin": "40px",
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "border-thick": "3px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": [
+                            "Space Grotesk"
+                        ],
+                        "body-md": [
+                            "Work Sans"
+                        ],
+                        "headline-xl": [
+                            "Space Grotesk"
+                        ],
+                        "body-lg": [
+                            "Work Sans"
+                        ],
+                        "headline-md": [
+                            "Space Grotesk"
+                        ],
+                        "label-bold": [
+                            "Lexend"
+                        ],
+                        "caption": [
+                            "Work Sans"
+                        ]
+                    },
+                    "fontSize": {
+                        "headline-lg": [
+                            "48px",
+                            {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "body-md": [
+                            "16px",
+                            {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "headline-xl": [
+                            "80px",
+                            {
+                                "lineHeight": "1.0",
+                                "letterSpacing": "-0.04em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "body-lg": [
+                            "20px",
+                            {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "headline-md": [
+                            "32px",
+                            {
+                                "lineHeight": "1.2",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "label-bold": [
+                            "14px",
+                            {
+                                "lineHeight": "1.0",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "caption": [
+                            "12px",
+                            {
+                                "lineHeight": "1.4",
+                                "fontWeight": "500"
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .halftone-bg {
+            background-image: radial-gradient(#1b1b1c 20%, transparent 20%), radial-gradient(#1b1b1c 20%, transparent 20%);
+            background-color: #fcf8f9;
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+        }
+        .brutal-border {
+            border: 3px solid #1b1b1c;
+        }
+        .brutal-shadow {
+            box-shadow: 6px 6px 0px 0px #1b1b1c;
+        }
+        .brutal-button-hover:hover {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px 0px #1b1b1c;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="w-full sticky top-0 z-50 border-b-4 border-zinc-950 shadow-[0px_4px_0px_0px_rgba(255,222,0,1)] bg-white dark:bg-zinc-900 flex justify-between items-center h-20 px-6 md:px-12">
+<a class="text-3xl font-black italic tracking-widest text-zinc-950 dark:text-white bg-[#FFDE00] px-4 border-4 border-zinc-950 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" href="#">HERO_PORTFOLIO</a>
+<div class="hidden md:flex gap-8 font-['Space_Grotesk'] font-bold tracking-tighter uppercase text-zinc-950 dark:text-white items-center">
+<a class="text-zinc-950 bg-[#FFDE00] border-2 border-zinc-950 px-3 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:bg-[#FFDE00] hover:text-zinc-950 transition-all duration-100 cursor-pointer" href="#work">WORK</a>
+<a class="text-zinc-950 dark:text-zinc-100 hover:skew-x-[-10deg] transition-transform hover:bg-[#FFDE00] hover:text-zinc-950 transition-all duration-100 cursor-pointer px-3 py-1" href="#experience">EXPERIENCE</a>
+<a class="text-zinc-950 dark:text-zinc-100 hover:skew-x-[-10deg] transition-transform hover:bg-[#FFDE00] hover:text-zinc-950 transition-all duration-100 cursor-pointer px-3 py-1" href="#about">ABOUT</a>
+<a class="text-zinc-950 dark:text-zinc-100 hover:skew-x-[-10deg] transition-transform hover:bg-[#FFDE00] hover:text-zinc-950 transition-all duration-100 cursor-pointer px-3 py-1" href="#contact">CONTACT</a>
+</div>
+<button class="hidden md:flex bg-[#FFDE00] text-zinc-950 font-['Space_Grotesk'] font-bold tracking-tighter uppercase px-6 py-2 border-3 border-zinc-950 brutal-shadow brutal-button-hover transition-all duration-100">
+            DOWNLOAD CV
+        </button>
+<button class="md:hidden p-2 brutal-border bg-[#FFDE00] brutal-shadow">
+<span class="material-symbols-outlined font-bold text-zinc-950">menu</span>
+</button>
+</nav>
+<main class="flex-grow w-full max-w-container-max mx-auto px-6 md:px-12 py-12 flex flex-col gap-24">
+<!-- Hero Section -->
+<section class="relative w-full min-h-[614px] grid grid-cols-1 md:grid-cols-2 items-center gap-12 py-20 border-b-4 border-on-background">
+<div class="absolute inset-0 halftone-bg opacity-10 z-[-1]"></div>
+<!-- Left Content -->
+<div class="flex flex-col justify-center items-start gap-8 z-10">
+<div class="relative inline-block brutal-border bg-primary-container brutal-shadow px-8 py-4 rotate-[-2deg]">
+<h1 class="font-headline-xl text-headline-xl text-on-background uppercase m-0 leading-none">
+            BOOM! <br/> I'M ALEX.
+        </h1>
+<div class="absolute -top-6 -right-6 bg-tertiary text-on-tertiary font-label-bold text-label-bold px-4 py-2 brutal-border rotate-[12deg] shadow-[4px_4px_0px_0px_#1b1b1c]">
+            AVAILABLE NOW!
+        </div>
+</div>
+<p class="font-body-lg text-body-lg text-on-background max-w-2xl mt-6 bg-surface p-6 brutal-border shadow-[4px_4px_0px_0px_#1b1b1c] relative">
+        Creative Director &amp; Full-Stack Designer building powerful, heroic digital experiences. I turn complex problems into clear, striking visual stories.
+        <span class="absolute -bottom-4 left-12 w-8 h-8 bg-surface brutal-border rotate-45 border-t-0 border-l-0"></span>
+</p>
+<div class="flex gap-6 mt-8">
+<a class="bg-secondary text-on-secondary font-headline-md text-headline-md px-8 py-4 brutal-border brutal-shadow brutal-button-hover uppercase" href="#work">
+            SEE THE ACTION
+        </a>
+</div>
+</div>
+<!-- Right Content: Profile Picture -->
+<div class="relative flex justify-center items-center">
+<!-- Decorative Starburst -->
+<div class="absolute -top-10 -right-10 w-32 h-32 text-primary opacity-20 animate-pulse">
+<svg fill="currentColor" viewbox="0 0 100 100">
+<path d="M50 0 L60 40 L100 50 L60 60 L50 100 L40 60 L0 50 L40 40 Z"></path>
+</svg>
+</div>
+<!-- Image Container -->
+<div class="relative w-full max-w-[400px] aspect-square brutal-border bg-white rotate-3 brutal-shadow overflow-hidden group">
+<div class="absolute inset-0 halftone-bg opacity-20 z-0"></div>
+<img alt="Alex Profile" class="w-full h-full object-cover grayscale contrast-125 mix-blend-multiply relative z-10 group-hover:grayscale-0 transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH0Y6kM1YvE2qD9l4U3D-hF-k6Q2B9v1Xz_L0vY9y1r6J8B7G5F4E3D2C1"/>
+</div>
+<!-- Action Lines / Accents -->
+<div class="absolute -bottom-4 -left-4 w-24 h-24 border-l-8 border-b-8 border-zinc-950"></div>
+<div class="absolute top-1/4 -right-8 flex flex-col gap-2">
+<div class="w-12 h-3 bg-zinc-950 skew-x-[-20deg]"></div>
+<div class="w-16 h-3 bg-zinc-950 skew-x-[-20deg]"></div>
+<div class="w-10 h-3 bg-zinc-950 skew-x-[-20deg]"></div>
+</div>
+</div>
+</section>
+<!-- Work Section -->
+<section class="w-full flex flex-col gap-12" id="work">
+<div class="flex items-center gap-6">
+<h2 class="font-headline-lg text-headline-lg text-on-background uppercase bg-primary-fixed px-6 py-2 brutal-border shadow-[4px_4px_0px_0px_#1b1b1c] inline-block skew-x-[-5deg]">
+                    FEATURED PROJECTS
+                </h2>
+<div class="h-1 bg-on-background flex-grow"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Project 1 -->
+<article class="bg-surface brutal-border brutal-shadow flex flex-col group overflow-hidden relative">
+<div class="absolute top-4 right-4 bg-tertiary-container text-on-tertiary-container font-label-bold text-label-bold px-3 py-1 brutal-border z-10 rotate-3">
+                        WEB DESIGN
+                    </div>
+<div class="h-64 w-full bg-surface-variant border-b-3 border-on-background relative overflow-hidden">
+<img alt="Abstract bold graphic design composition" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 scale-105 group-hover:scale-100" data-alt="Bold abstract graphic design composition with thick black lines and vibrant primary colors in a comic book style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4bNUBfVjjZP58Zrzfuzh2DR5LXjiW9HhMcLDloGSywkg-NzwDe1f9v4ErTcafOq663A_xZhbPl61I-pPtqDUjMx5MAn8cjECMIumulfNdm8oGy-SNAQkVxgedDtvCGfaoZF5x0XTdCVFBWt2Ct_K-WvzQQhHzvpT3iQ-_FAi_DyBPjbcR4U33lUxbg-veC7sL3bEhHKhll2BuTiSp6KrjhbvWkcdhGtS6dNyVbPlekjbJT5Fd5EVMKmQBUHcLgqnR1JHj3p5Img"/>
+</div>
+<div class="p-6 flex flex-col gap-4 bg-white relative">
+<div class="absolute top-0 right-0 w-16 h-16 halftone-bg opacity-20"></div>
+<h3 class="font-headline-md text-headline-md text-on-background uppercase">Gotham Redesign</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">A complete dark-mode overhaul for the city's primary security dashboard. High contrast, high impact.</p>
+<a class="font-label-bold text-label-bold text-secondary uppercase flex items-center gap-2 mt-4 hover:underline decoration-3 underline-offset-4 w-max" href="#">
+                            READ CASE STUDY <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</article>
+<!-- Project 2 -->
+<article class="bg-surface brutal-border brutal-shadow flex flex-col group overflow-hidden relative translate-y-4 md:translate-y-12">
+<div class="absolute top-4 right-4 bg-primary-container text-on-primary-container font-label-bold text-label-bold px-3 py-1 brutal-border z-10 -rotate-2">
+                        BRANDING
+                    </div>
+<div class="h-64 w-full bg-surface-variant border-b-3 border-on-background relative overflow-hidden">
+<img alt="Vibrant abstract branding assets" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 scale-105 group-hover:scale-100" data-alt="Dynamic geometric branding mockups with bold typography and bright yellow accents on a stark white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCak2m5QdHjKXOpZazr_pYUCRLbRSnFPOkgGsGyPZBIzhG1ThAewapfCggUNFWgMPHokuq3Vqg5U11_mUIOESdGDlJWuoEcTMdEET1SqoldJMADvURHho8yRwf6VKdTVC6qO7lXEz3K0tnaDugsyBbQsHPjQJQ_3-0ghmwKBQh8L2koB6nM0hoaON_IUEj4rkpaCrv4rlaKcbV-cxx6e5PTSyfX_HyJUF9L8JeDIBNm-IuAhdwOqzOrXJkbl-8TAODiAGBvXi6rxQ"/>
+</div>
+<div class="p-6 flex flex-col gap-4 bg-white relative">
+<div class="absolute bottom-0 left-0 w-24 h-24 halftone-bg opacity-10"></div>
+<h3 class="font-headline-md text-headline-md text-on-background uppercase">Daily Planet App</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Breaking news delivered faster than a speeding bullet. A mobile-first newsreader with aggressive typography.</p>
+<a class="font-label-bold text-label-bold text-secondary uppercase flex items-center gap-2 mt-4 hover:underline decoration-3 underline-offset-4 w-max" href="#">
+                            READ CASE STUDY <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t-4 border-zinc-950 py-12 bg-zinc-950 dark:bg-black flex flex-col md:flex-row justify-between items-center px-12 max-w-full gap-8">
+<div class="text-[#FFDE00] font-black italic text-2xl">
+            HERO_PORTFOLIO
+        </div>
+<div class="flex flex-wrap gap-6 font-['Lexend'] font-medium text-xs uppercase tracking-widest">
+<a class="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200 active:opacity-80" href="#">GITHUB</a>
+<a class="text-[#FFDE00] underline decoration-4 underline-offset-8 active:opacity-80" href="#">LINKEDIN</a>
+<a class="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200 active:opacity-80" href="#">DRIBBBLE</a>
+<a class="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200 active:opacity-80" href="#">EMAIL</a>
+</div>
+<div class="font-['Lexend'] font-medium text-xs uppercase tracking-widest text-zinc-400">
+            © 2024 HERO CREATIVE. ALL RIGHTS RESERVED.
+        </div>
+</footer>
+</body></html>

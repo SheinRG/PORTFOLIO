@@ -30,42 +30,43 @@ const seedData = async () => {
         liveUrl: "https://imagix-three.vercel.app/"
       },
       {
-        title: "OIRION AI",
+        title: "AGENTIC INTERVIEW COACH",
         chapterNumber: "CHAPTER 2",
-        description: "An AI-powered interview coaching platform that simulates real interview scenarios with voice-based conversational AI. Features real-time speech-to-text, intelligent follow-up questions, STAR method evaluation, and comprehensive performance feedback to help candidates ace their interviews.",
-        techStack: ["REACT", "TAILWIND", "FRAMER MOTION", "EXPRESS", "MONGODB", "GROQ API", "ELEVENLABS TTS"],
-        tags: ["AI", "FULLSTACK", "VOICE-AI"],
+        description: "Deployed a real-time AI agent leveraging Claude and Groq APIs to autonomously conduct role-specific interview simulations. Orchestrated a multi-API pipeline (Claude, ElevenLabs TTS, Web Speech API) with automated silence detection. Built an intelligent evaluation engine that analyzes behavioral signals and delivers granular performance metrics.",
+        techStack: ["REACT.JS", "NODE.JS", "GROQ API", "ELEVENLABS", "MONGOOSE"],
+        tags: ["AI/ML", "VOICE-AI"],
         imageUrl: "/images/orion-ai-cover.png",
         detailImageUrl: "/images/orion-ai-cover.png",
         githubUrl: "https://github.com/SheinRG/didallfornothing-",
         liveUrl: "https://didallfornothing-client.vercel.app"
       },
       {
-        title: "COMING SOON",
+        title: "RAG DOCUMENT ANALYZER",
         chapterNumber: "CHAPTER 3",
-        description: "The next big project is currently being forged in the lab. Stay tuned — something epic is on the way that will push the boundaries of what's possible.",
-        techStack: [],
-        tags: ["TBA"],
-        imageUrl: "",
-        githubUrl: "",
-        liveUrl: ""
+        description: "Engineered a production-grade Retrieval-Augmented Generation (RAG) pipeline from scratch ingesting PDFs via LangChain, chunking, and embedding into ChromaDB. Designed a FastAPI backend with async background workers and JWT-based auth deployed on Render with Docker. Integrated Groq API (LLaMA 3) with precision-engineered prompting and streaming SSE responses.",
+        techStack: ["FASTAPI", "REACT.JS", "LANGCHAIN", "CHROMADB", "PGVECTOR", "DOCKER"],
+        tags: ["AI/ML", "RAG", "FULLSTACK"],
+        imageUrl: "/nexus-ai.png",
+        detailImageUrl: "/nexus-ai.png",
+        githubUrl: "https://github.com/SheinRG/Rag",
+        liveUrl: "https://nexus-ai-theta-seven.vercel.app/"
       }
     ]);
 
     await Experience.create([
       {
-        title: "SOFTWARE ENGINEERING INTERN: TECH-TITANS HQ",
-        description: "Infiltrated the front-lines of a fast-paced development squad. Mastered the art of high-performance UI architecture and squashed legacy dependencies with precision.",
-        projects: ["Comic-Style Dashboard Prototype", "Real-time Mission Tracker"],
-        certificateUrl: "https://certificates.demo/internship-01",
-        colorTheme: "yellow"
+        title: "FRONT-END DEVELOPER INTERN @ INTERNPE",
+        description: "Architected 3+ responsive web applications using React.js and Tailwind CSS; automated asset optimization via lazy loading, cutting load times by ~40%. Built a reusable component library with centralized state management, reducing feature development cycles by ~30%.",
+        projects: ["Asset Optimization Engine", "Component Library Toolkit"],
+        certificateUrl: "/internpe.pdf",
+        colorTheme: "blue"
       },
       {
-        title: "AI/ML DEVELOPMENT INTERN: NEURAL NEXUS",
-        description: "Harnessed the power of LLMs and neural architectures to automate mission-critical analysis. Training advanced models to recognize technical debt at a glance.",
-        projects: ["Neural Bug-Squasher API", "Multiverse Sentiment Analyzer"],
-        certificateUrl: "https://certificates.demo/internship-02",
-        colorTheme: "blue"
+        title: "WEB DEVELOPMENT INTERN (BACKEND) @ CODEALPHA",
+        description: "Designed and deployed RESTful APIs with full CRUD operations using Node.js/Express.js following MVC architecture. Shipped a secure, end-to-end authentication system using JWT tokens and bcrypt hashing, forming an auth backbone reused across internal tools.",
+        projects: ["RESTful API Architecture", "JWT Auth System"],
+        certificateUrl: "/codealpha.pdf",
+        colorTheme: "yellow"
       }
     ]);
 
