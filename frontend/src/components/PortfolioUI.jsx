@@ -1,13 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
-import { useTheme } from 'next-themes';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 
 // Spring animation config reused across hero elements
 const springPop = (delay) => ({
   initial: { scale: 0, opacity: 0 },
   animate: { scale: 1, opacity: 1 },
-  transition: { type: 'spring', bounce: 0.55, duration: 0.8, delay },
+  transition: { type: 'spring', bounce: 0.2, duration: 0.8, delay },
 });
 
 // Manga panel placeholder data — 3 panels only
@@ -29,7 +28,7 @@ const MangaPanel = ({ children, image, title, sub, className, side = 'left', del
       initial={{ opacity: 0, x: side === 'left' ? -100 : 100, rotate: side === 'left' ? -5 : 5 }}
       whileInView={{ opacity: 1, x: 0, rotate: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ type: 'spring', bounce: 0.4, duration: 1, delay }}
+      transition={{ type: 'spring', bounce: 0.2, duration: 1, delay }}
       className={`relative border-[8px] border-comicBlack dark:border-border bg-card shadow-[12px_12px_0_var(--border)] overflow-hidden group cursor-crosshair ${className}`}
     >
       <div className="absolute inset-0 z-0 bg-comicBlack/5 group-hover:bg-transparent transition-colors duration-500"></div>
@@ -52,7 +51,7 @@ const SpeechBubble = ({ children, className, side = 'left', delay = 0 }) => (
     initial={{ scale: 0, opacity: 0 }}
     whileInView={{ scale: 1, opacity: 1 }}
     viewport={{ once: true }}
-    transition={{ type: 'spring', bounce: 0.6, duration: 0.8, delay: delay + 0.5 }}
+    transition={{ type: 'spring', bounce: 0.2, duration: 0.8, delay: delay + 0.5 }}
     className={`absolute z-20 bg-card border-4 border-comicBlack dark:border-border p-4 shadow-[4px_4px_0_var(--border)] max-w-[200px] ${className}`}
   >
     <div className={`absolute bottom-[-16px] ${side === 'left' ? 'left-4' : 'right-4'} w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[16px] border-t-comicBlack`}></div>
@@ -84,11 +83,42 @@ export default function PortfolioUI() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [selectedCertificateUrl, setSelectedCertificateUrl] = useState(null);
   const [isMessageSent, setIsMessageSent] = useState(false);
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [actionWords, setActionWords] = useState([]);
+  const [easterEggs, setEasterEggs] = useState([]);
+  const [activeHero, setActiveHero] = useState(null);
   const { scrollYProgress } = useScroll();
+
+  const mouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
+  const mouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
+  const rotateX = useTransform(mouseY, [0, typeof window !== 'undefined' ? window.innerHeight : 1000], [15, -15]);
+  const rotateY = useTransform(mouseX, [0, typeof window !== 'undefined' ? window.innerWidth : 1000], [-15, 15]);
+
+  const handleMouseMove = (e) => {
+    mouseX.set(e.clientX);
+    mouseY.set(e.clientY);
+  };
+
+  const triggerEasterEgg = (e) => {
+    e.stopPropagation();
+    const messages = [
+      "Accessing mainframe...", 
+      "404: Sleep not found", 
+      "It compiles on my machine!", 
+      "git commit -m 'fixed everything'", 
+      "Are you looking for bugs? 🐞"
+    ];
+    const text = messages[Math.floor(Math.random() * messages.length)];
+    const id = Date.now();
+    const x = Math.random() * (typeof window !== 'undefined' ? window.innerWidth * 0.7 : 800) + 100;
+    const y = Math.random() * (typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) + 100;
+    
+    setEasterEggs(prev => [...prev, { id, x, y, text }]);
+    setTimeout(() => {
+      setEasterEggs(prev => prev.filter(egg => egg.id !== id));
+    }, 3000);
+  };
 
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -125,6 +155,52 @@ export default function PortfolioUI() {
   }, []);
 
   useEffect(() => {
+    const heroes = [
+      { id: 'ironman', imgSrc: '/ironman_rm.png', name: 'IRON MAN', messages: ['I AM IRON MAN.', 'JARVIS, COMPILE THE CODE.', 'BUG SQUASHED.', 'UPGRADING FIRMWARE...', 'ARC REACTOR AT 100%.', 'I LOVE YOU 3000 LINES OF CODE.'] },
+      { id: 'superman', imgSrc: '/superman_rm.png', name: 'SUPERMAN', messages: ['UP, UP, AND AWAY!', 'TRUTH, JUSTICE, AND CLEAN CODE.', 'FASTER THAN A SPEEDING BULLET.', 'MY X-RAY VISION SEES NO BUGS.', 'THIS ARCHITECTURE IS KRYPTONIAN.'] },
+      { id: 'hulk', imgSrc: '/hulk_rm.png', name: 'HULK', messages: ['HULK SMASH BUGS!', 'PUNY ERRORS!', 'HULK HATE SYNTAX ERRORS!', 'CODE ANGRY!', "THAT'S MY SECRET, I'M ALWAYS CODING."] },
+      { id: 'spidey', imgSrc: '/spiderman_rm.png', name: 'SPIDEY', messages: ['MY PETER TINGLE IS GOING OFF!', 'FRIENDLY NEIGHBORHOOD DEV.', 'WITH GREAT POWER COMES GREAT CODE.', 'CAUGHT IN MY WEB HOOK.', 'JUST SWINGING BY THE REPO.'] },
+      { id: 'batman', imgSrc: '/batman_rm.png', name: 'BATMAN', messages: ['I AM VENGEANCE. I AM THE NIGHT.', 'WHERE IS THE BUG?!', 'TO THE BATCAVE!', 'I HAVE A GADGET FOR THAT.', 'JUSTICE NEVER SLEEPS, NEITHER DO I.', 'THE DARK KNIGHT COMPILES.'] }
+    ];
+
+    const positions = [
+      { side: 'left', bottom: '40px', left: '20px', startX: -300 },
+      { side: 'right', bottom: '40px', right: '20px', startX: 300 },
+      { side: 'left', top: '120px', left: '20px', startX: -300 },
+      { side: 'right', top: '120px', right: '20px', startX: 300 },
+    ];
+
+    const showRandomHero = () => {
+      const randomHero = heroes[Math.floor(Math.random() * heroes.length)];
+      const randomPos = positions[Math.floor(Math.random() * positions.length)];
+      const randomMsg = randomHero.messages[Math.floor(Math.random() * randomHero.messages.length)];
+      
+      setActiveHero({
+        ...randomHero,
+        ...randomPos,
+        message: randomMsg
+      });
+
+      setTimeout(() => {
+        setActiveHero(null);
+      }, 2500);
+    };
+
+    // Show first hero immediately
+    const initTimeout = setTimeout(showRandomHero, 500);
+
+    // Then show one every 10 seconds
+    const interval = setInterval(() => {
+      showRandomHero();
+    }, 10000);
+
+    return () => {
+      clearTimeout(initTimeout);
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
     Promise.all([
       fetch('http://localhost:5001/api/projects').then(res => res.json()).catch(() => []),
       fetch('http://localhost:5001/api/experiences').then(res => res.json()).catch(() => [])
@@ -137,7 +213,7 @@ export default function PortfolioUI() {
 
   if (!mounted) return null;
 
-  const darkMode = theme === 'dark';
+  const darkMode = false;
 
   const handleContactSubmit = async (e) => {
     e.preventDefault();
@@ -162,8 +238,9 @@ export default function PortfolioUI() {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-500 bg-background text-foreground relative`}
+      className={`min-h-screen transition-colors duration-500 bg-background text-foreground relative ${!isContactOpen && !isSecretIdentityOpen && !isPowersOpen && !isResumeOpen && !selectedCertificateUrl ? 'cursor-crosshair' : ''}`}
       onClick={(e) => triggerActionWord(e.clientX, e.clientY)}
+      onMouseMove={handleMouseMove}
     >
       {/* Full Page Halftone Grid Background with Parallax */}
       <motion.div className="fixed inset-0 halftone-bg opacity-[0.03] pointer-events-none z-0" style={{ y: gridY }}></motion.div>
@@ -249,18 +326,24 @@ export default function PortfolioUI() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            {/* Decorative Starburst */}
-            <div className="absolute -top-10 -right-10 w-32 h-32 text-primary opacity-20 animate-pulse">
+            {/* Decorative Starburst (Easter Egg Trigger) */}
+            <div 
+              className="absolute -top-10 -right-10 w-32 h-32 text-primary opacity-20 animate-pulse cursor-pointer hover:opacity-100 hover:scale-110 transition-all z-20"
+              onClick={triggerEasterEgg}
+            >
               <svg fill="currentColor" viewBox="0 0 100 100">
                 <path d="M50 0 L60 40 L100 50 L60 60 L50 100 L40 60 L0 50 L40 40 Z"></path>
               </svg>
             </div>
 
-            {/* Image Container */}
-            <div className="relative w-full max-w-[400px] aspect-square brutal-border bg-white rotate-3 brutal-shadow overflow-hidden group">
+            {/* Image Container with 3D Tilt */}
+            <motion.div 
+              className="relative w-full max-w-[400px] aspect-square brutal-border bg-white brutal-shadow overflow-hidden group"
+              style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+            >
               <div className="absolute inset-0 halftone-bg opacity-20 z-0"></div>
-              <img alt="Raghav Profile" className="w-full h-full object-cover grayscale contrast-125 mix-blend-multiply relative z-10 group-hover:grayscale-0 transition-all duration-300" src="/profile.jpg" />
-            </div>
+              <img alt="Raghav Profile" className="w-full h-full object-cover relative z-10 transition-all duration-300" src="/profile.jpg" />
+            </motion.div>
 
             {/* Action Lines / Accents */}
             <div className="absolute -bottom-4 -left-4 w-24 h-24 border-l-8 border-b-8 border-zinc-950 dark:border-white"></div>
@@ -271,6 +354,21 @@ export default function PortfolioUI() {
             </div>
           </motion.div>
         </section>
+
+        {/* Marquee Banner */}
+        <div className="w-[100vw] relative left-1/2 -translate-x-1/2 bg-[#FFDE00] border-y-4 border-zinc-950 py-3 overflow-hidden rotate-[-1deg] scale-[1.05] my-8 z-20 shadow-[0_8px_0_#1b1b1c]">
+          <motion.div 
+            className="flex whitespace-nowrap font-black italic text-xl uppercase tracking-widest text-zinc-950"
+            animate={{ x: [0, -1000] }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 8 }}
+          >
+            {[...Array(6)].map((_, i) => (
+              <span key={i} className="mx-4">
+                /// SQUASHING BUGS /// TRAINING LLMS /// DEPLOYING PIPELINES /// CRAFTING UI /// ARCHITECTING BACKENDS
+              </span>
+            ))}
+          </motion.div>
+        </div>
 
         {/* Work Section */}
         <section className="w-full flex flex-col gap-12" id="work">
@@ -285,7 +383,9 @@ export default function PortfolioUI() {
             {projects.map((project, idx) => (
               <motion.article
                 key={project._id || idx}
-                className={`bg-surface dark:bg-zinc-900 brutal-border brutal-shadow flex flex-col h-full group overflow-hidden relative cursor-pointer`}
+                className={`bg-surface dark:bg-zinc-900 brutal-border brutal-shadow flex flex-col h-full group overflow-hidden relative cursor-pointer ${
+                  projects.length % 2 !== 0 && idx === projects.length - 1 ? 'md:col-span-2' : ''
+                }`}
                 onClick={() => setSelectedProject(project)}
                 initial={{ opacity: 0, scale: 0.95, rotate: idx % 2 === 0 ? -1 : 1 }}
                 whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -298,7 +398,7 @@ export default function PortfolioUI() {
                 </div>
                 <div className="h-64 w-full bg-surface-variant border-b-3 border-on-background relative overflow-hidden">
                   {project.imageUrl ? (
-                    <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 scale-105 group-hover:scale-100" />
+                    <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover transition-all duration-300 scale-105 group-hover:scale-100" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center opacity-30">
                       <span className="font-headline-md">NO IMAGE</span>
@@ -346,7 +446,7 @@ export default function PortfolioUI() {
                 initial={{ opacity: 0, scale: 0.9, x: idx % 2 === 0 ? -30 : 30 }}
                 whileInView={{ opacity: 1, scale: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ type: 'spring', bounce: 0.35, delay: idx * 0.15 }}
+                transition={{ type: 'spring', bounce: 0.2, delay: idx * 0.15 }}
                 style={{ y: idx % 2 === 0 ? expParallaxEven : expParallaxOdd }}
               >
                 {/* Specialized 'No Image' Icon Section for Internships */}
@@ -422,10 +522,10 @@ export default function PortfolioUI() {
             {/* Modal Content */}
             <motion.div
               className="relative bg-surface dark:bg-zinc-900 brutal-border brutal-shadow max-w-2xl w-full max-h-[85vh] overflow-y-auto z-10"
-              initial={{ scale: 0, rotate: -5 }}
-              animate={{ scale: 1, rotate: 0 }}
-              exit={{ scale: 0, rotate: 5 }}
-              transition={{ type: 'spring', bounce: 0.5 }}
+              initial={{ scale: 2, opacity: 0, rotate: -10 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              exit={{ scale: 0.5, opacity: 0, rotate: 10 }}
+              transition={{ type: "spring", damping: 20, stiffness: 120 }}
             >
               {/* Header */}
               <div className="bg-primary-container p-6 border-b-3 border-on-background relative">
@@ -513,7 +613,7 @@ export default function PortfolioUI() {
 
             <motion.div
               className="relative bg-surface dark:bg-zinc-900 brutal-border brutal-shadow max-w-xl w-full z-10 overflow-hidden"
-              initial={{ y: 100, rotate: 2 }} animate={{ y: 0, rotate: 0 }} exit={{ y: 100, rotate: -2 }}
+              initial={{ scale: 2, opacity: 0, rotate: -10 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} exit={{ scale: 0.5, opacity: 0, rotate: 10 }} transition={{ type: "spring", damping: 20, stiffness: 120 }}
             >
               {/* Header */}
               <div className="bg-secondary-container p-6 border-b-3 border-on-background flex justify-between items-center text-on-secondary-container">
@@ -592,7 +692,7 @@ export default function PortfolioUI() {
             <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsSecretIdentityOpen(false)}></div>
             <motion.div
               className={`relative bg-surface dark:bg-zinc-900 border-3 border-on-background brutal-shadow max-w-2xl w-full z-10 overflow-hidden`}
-              initial={{ scale: 0.8, y: 50 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, y: 50 }}
+              initial={{ scale: 2, opacity: 0, rotate: -10 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} exit={{ scale: 0.5, opacity: 0, rotate: 10 }} transition={{ type: "spring", damping: 20, stiffness: 120 }}
             >
               <div className="bg-tertiary-container text-on-tertiary-container p-6 border-b-3 border-on-background flex justify-between items-center">
                 <h2 className="font-headline-lg text-3xl uppercase m-0 leading-none">AGENT DOSSIER: RAGHAV</h2>
@@ -601,7 +701,7 @@ export default function PortfolioUI() {
               <div className="p-8 flex flex-col gap-6 bg-white dark:bg-black">
                 <div className="flex gap-6 items-start">
                   <div className="w-32 h-32 brutal-border bg-surface flex-shrink-0 rotate-2 overflow-hidden shadow-[4px_4px_0_#1b1b1c]">
-                    <img src="/profile.jpg" alt="Agent Profile" className="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-300 scale-110" />
+                    <img src="/profile.jpg" alt="Agent Profile" className="w-full h-full object-cover transition-all duration-300 scale-110" />
                   </div>
                   <div className="flex-1">
                     <p className="font-headline-md text-2xl text-secondary mb-2 uppercase italic">&quot;The Code-Squashing Avenger&quot;</p>
@@ -645,7 +745,7 @@ export default function PortfolioUI() {
             <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsPowersOpen(false)}></div>
             <motion.div
               className={`relative bg-surface dark:bg-zinc-900 border-3 border-on-background brutal-shadow max-w-2xl w-full z-10 overflow-hidden`}
-              initial={{ scale: 0.8, rotate: 2 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0.8, rotate: -2 }}
+              initial={{ scale: 2, opacity: 0, rotate: -10 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} exit={{ scale: 0.5, opacity: 0, rotate: 10 }} transition={{ type: "spring", damping: 20, stiffness: 120 }}
             >
               <div className="bg-primary-container text-on-primary-container p-6 border-b-3 border-on-background flex justify-between items-center">
                 <h2 className="font-headline-lg text-3xl uppercase m-0 leading-none">POWERS & ABILITIES</h2>
@@ -722,7 +822,7 @@ export default function PortfolioUI() {
             <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setIsResumeOpen(false)}></div>
             <motion.div
               className={`relative bg-surface dark:bg-zinc-900 border-4 border-on-background brutal-shadow w-full max-w-5xl h-[90vh] z-10 flex flex-col`}
-              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 2, opacity: 0, rotate: -10 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} exit={{ scale: 0.5, opacity: 0, rotate: 10 }} transition={{ type: "spring", damping: 20, stiffness: 120 }}
             >
               <div className="bg-primary-container text-on-primary-container p-4 border-b-4 border-on-background flex justify-between items-center">
                 <h2 className="font-headline-lg text-2xl uppercase m-0 leading-none">RAGHAV_RESUME.PDF</h2>
@@ -748,7 +848,7 @@ export default function PortfolioUI() {
             <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedCertificateUrl(null)}></div>
             <motion.div
               className={`relative bg-surface dark:bg-zinc-900 border-4 border-on-background brutal-shadow w-full max-w-5xl h-[90vh] z-10 flex flex-col`}
-              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 2, opacity: 0, rotate: -10 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} exit={{ scale: 0.5, opacity: 0, rotate: 10 }} transition={{ type: "spring", damping: 20, stiffness: 120 }}
             >
               <div className="bg-secondary-container text-on-secondary-container p-4 border-b-4 border-on-background flex justify-between items-center">
                 <h2 className="font-headline-lg text-2xl uppercase m-0 leading-none">VERIFIED_CREDENTIAL.PDF</h2>
@@ -763,19 +863,100 @@ export default function PortfolioUI() {
       </AnimatePresence>
 
       <footer className="w-full border-t-4 border-zinc-950 py-12 bg-zinc-950 dark:bg-black flex flex-col md:flex-row justify-between items-center px-12 max-w-full gap-8">
-        <div className="text-[#FFDE00] font-black italic text-2xl">
-          HERO_PORTFOLIO
+        <div className="text-[#FFDE00] font-black italic text-2xl uppercase tracking-widest">
+          YOU HAVE BEEN SAVED
         </div>
-        <div className="flex flex-wrap gap-6 font-label-bold font-medium text-xs uppercase tracking-widest">
-          <a className="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200 active:opacity-80" href="#">GITHUB</a>
-          <a className="text-[#FFDE00] underline decoration-4 underline-offset-8 active:opacity-80" href="#">LINKEDIN</a>
-          <a className="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200 active:opacity-80" href="#">DRIBBBLE</a>
-          <a className="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200 active:opacity-80" href="#">EMAIL</a>
+        <div className="flex flex-wrap gap-8 font-label-bold font-medium text-xs uppercase tracking-widest items-center">
+          <motion.a 
+            className="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200" 
+            href="https://github.com/SheinRG"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.2, rotate: 10 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 8 18v4"></path></svg>
+          </motion.a>
+          <motion.a 
+            className="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200" 
+            href="https://www.linkedin.com/in/raghav-gangwar21"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.2, rotate: -10 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          </motion.a>
+          <motion.a 
+            className="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200" 
+            href="https://x.com/RaghavGangwar15"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.2, rotate: 10 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"></path><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path></svg>
+          </motion.a>
+          <motion.a 
+            className="text-zinc-400 hover:text-[#FFDE00] transition-colors duration-200" 
+            href="mailto:raghavgangwar222@gmail.com"
+            whileHover={{ scale: 1.2, rotate: -10 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </motion.a>
         </div>
         <div className="font-label-bold font-medium text-xs uppercase tracking-widest text-zinc-400">
           © 2024 HERO CREATIVE. ALL RIGHTS RESERVED.
         </div>
       </footer>
+
+      {/* Easter Egg Rendering */}
+      <AnimatePresence>
+        {easterEggs.map(egg => (
+          <motion.div
+            key={egg.id}
+            className="fixed pointer-events-none z-[9999] bg-white border-4 border-black px-6 py-4 brutal-shadow max-w-xs"
+            initial={{ opacity: 0, scale: 0, x: egg.x, y: egg.y, rotate: Math.random() * 20 - 10 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+          >
+            <p className="font-headline-md text-lg text-black">{egg.text}</p>
+            <div className="absolute -bottom-4 left-4 w-4 h-4 bg-white border-b-4 border-r-4 border-black rotate-45"></div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+      {/* Random Superhero Popups */}
+      <AnimatePresence>
+        {activeHero && (
+          <motion.div
+            key="superhero"
+            initial={{ opacity: 0, x: activeHero.startX }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: activeHero.startX }}
+            transition={{ type: 'spring', bounce: 0.2, duration: 0.8 }}
+            className="fixed z-[9999] flex items-center gap-4 pointer-events-none"
+            style={{
+              bottom: activeHero.bottom,
+              top: activeHero.top,
+              left: activeHero.left,
+              right: activeHero.right,
+              flexDirection: activeHero.side === 'right' ? 'row-reverse' : 'row'
+            }}
+          >
+            <div className={`w-24 h-24 rounded-full border-4 border-[#1b1b1c] brutal-shadow flex items-center justify-center bg-white overflow-hidden p-1`}>
+              <img src={activeHero.imgSrc} alt={activeHero.name} className="w-full h-full object-contain" />
+            </div>
+            <div className="bg-white border-3 border-[#1b1b1c] p-4 brutal-shadow relative max-w-[200px]">
+              <p className="font-comic font-bold text-sm uppercase text-black">{activeHero.message}</p>
+              <div className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-[#1b1b1c] rotate-45 
+                ${activeHero.side === 'right' ? '-right-[10px] border-t-3 border-r-3' : '-left-[10px] border-b-3 border-l-3'}`} 
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
