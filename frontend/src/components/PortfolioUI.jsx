@@ -201,9 +201,10 @@ export default function PortfolioUI() {
   }, []);
 
   useEffect(() => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
     Promise.all([
-      fetch('http://localhost:5001/api/projects').then(res => res.json()).catch(() => []),
-      fetch('http://localhost:5001/api/experiences').then(res => res.json()).catch(() => [])
+      fetch(`${API_URL}/api/projects`).then(res => res.json()).catch(() => []),
+      fetch(`${API_URL}/api/experiences`).then(res => res.json()).catch(() => [])
     ]).then(([projData, expData]) => {
       setProjects(Array.isArray(projData) ? projData : []);
       setExperiences(Array.isArray(expData) ? expData : []);
@@ -218,7 +219,8 @@ export default function PortfolioUI() {
   const handleContactSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5001/api/messages', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+      const res = await fetch(`${API_URL}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
