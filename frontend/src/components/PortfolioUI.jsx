@@ -831,7 +831,7 @@ export default function PortfolioUI() {
                 <button onClick={() => setIsResumeOpen(false)} className="bg-on-background text-white font-label-bold text-xl w-10 h-10 border-2 border-on-background flex items-center justify-center brutal-button-hover">✕</button>
               </div>
               <div className="flex-1 w-full bg-zinc-200 dark:bg-zinc-800">
-                <iframe src="/resume.pdf" className="w-full h-full border-0" title="Resume PDF"></iframe>
+                <iframe src="/bookleaf.pdf" className="w-full h-full border-0" title="Resume PDF"></iframe>
               </div>
             </motion.div>
           </motion.div>
@@ -856,8 +856,12 @@ export default function PortfolioUI() {
                 <h2 className="font-headline-lg text-2xl uppercase m-0 leading-none">VERIFIED_CREDENTIAL.PDF</h2>
                 <button onClick={() => setSelectedCertificateUrl(null)} className="bg-on-background text-white font-label-bold text-xl w-10 h-10 border-2 border-on-background flex items-center justify-center brutal-button-hover">✕</button>
               </div>
-              <div className="flex-1 w-full bg-zinc-200 dark:bg-zinc-800">
-                <iframe src={selectedCertificateUrl} className="w-full h-full border-0" title="Certificate PDF"></iframe>
+              <div className="flex-1 w-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
+                {selectedCertificateUrl && (selectedCertificateUrl.toLowerCase().endsWith('.png') || selectedCertificateUrl.toLowerCase().endsWith('.jpg') || selectedCertificateUrl.toLowerCase().endsWith('.jpeg')) ? (
+                  <img src={selectedCertificateUrl} alt="Certificate" className="max-w-full max-h-full object-contain" />
+                ) : (
+                  <iframe src={selectedCertificateUrl} className="w-full h-full border-0" title="Certificate PDF"></iframe>
+                )}
               </div>
             </motion.div>
           </motion.div>

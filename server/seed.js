@@ -55,10 +55,10 @@ const seedData = async () => {
 
     await Experience.create([
       {
-        title: "FRONT-END DEVELOPER INTERN @ INTERNPE",
-        description: "Architected 3+ responsive web applications using React.js and Tailwind CSS; automated asset optimization via lazy loading, cutting load times by ~40%. Built a reusable component library with centralized state management, reducing feature development cycles by ~30%.",
-        projects: ["Asset Optimization Engine", "Component Library Toolkit"],
-        certificateUrl: "/internpe.pdf",
+        title: "FULL STACK ENGINEER INTERN @ MEDULANCE",
+        description: "Developed RESTful APIs and database schemas using Node.js, Express.js, and MongoDB for healthcare application features, ensuring robust data persistence and API reliability. • Built responsive UI with React.js and Tailwind CSS, implemented secure user authentication using JWT tokens and bcrypt hashing for session management. • Collaborated with cross functional teams to validate technical requirements and ensure code quality through reviews and best practices documentation.",
+        projects: ["Healthcare Application Features", "Secure User Authentication"],
+        certificateUrl: "/medulance.png",
         colorTheme: "blue"
       },
       {
