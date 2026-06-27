@@ -89,6 +89,7 @@ export default function PortfolioUI() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isSecretIdentityOpen, setIsSecretIdentityOpen] = useState(false);
   const [isPowersOpen, setIsPowersOpen] = useState(false);
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [selectedCertificateUrl, setSelectedCertificateUrl] = useState(null);
   const [isMessageSent, setIsMessageSent] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -251,6 +252,7 @@ export default function PortfolioUI() {
           <button onClick={() => setIsSecretIdentityOpen(true)} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-2 brutal-border brutal-shadow hover:-translate-y-1 hover:bg-[#FFDE00] hover:text-zinc-950 transition-all duration-200 cursor-pointer">ABOUT</button>
           <button onClick={() => setIsContactOpen(true)} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-2 brutal-border brutal-shadow hover:-translate-y-1 hover:bg-[#FFDE00] hover:text-zinc-950 transition-all duration-200 cursor-pointer">CONTACT</button>
           <button onClick={() => setIsPowersOpen(true)} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-2 brutal-border brutal-shadow hover:-translate-y-1 hover:bg-[#FFDE00] hover:text-zinc-950 transition-all duration-200 cursor-pointer">POWERS</button>
+          <button onClick={() => setIsResumeOpen(true)} className="bg-[#FFDE00] text-zinc-950 px-4 py-2 brutal-border brutal-shadow hover:-translate-y-1 transition-all duration-200 cursor-pointer">RESUME</button>
         </div>
 
         <button
@@ -277,6 +279,7 @@ export default function PortfolioUI() {
               <button onClick={() => { setIsSecretIdentityOpen(true); setIsMobileMenuOpen(false); }} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-3 brutal-border brutal-shadow font-bold tracking-tighter uppercase text-left hover:bg-[#FFDE00] hover:text-zinc-950 transition-colors">ABOUT</button>
               <button onClick={() => { setIsContactOpen(true); setIsMobileMenuOpen(false); }} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-3 brutal-border brutal-shadow font-bold tracking-tighter uppercase text-left hover:bg-[#FFDE00] hover:text-zinc-950 transition-colors">CONTACT</button>
               <button onClick={() => { setIsPowersOpen(true); setIsMobileMenuOpen(false); }} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-3 brutal-border brutal-shadow font-bold tracking-tighter uppercase text-left hover:bg-[#FFDE00] hover:text-zinc-950 transition-colors">POWERS</button>
+              <button onClick={() => { setIsResumeOpen(true); setIsMobileMenuOpen(false); }} className="bg-[#FFDE00] text-zinc-950 px-4 py-3 brutal-border brutal-shadow font-bold tracking-tighter uppercase text-left transition-colors">RESUME</button>
             </div>
           </motion.div>
         )}
@@ -833,6 +836,41 @@ export default function PortfolioUI() {
                 ) : (
                   <iframe src={selectedCertificateUrl} className="w-full h-full border-0" title="Certificate PDF"></iframe>
                 )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══════════════════════════════════════════════════ */}
+      {/* RESUME VIEWER MODAL                                */}
+      {/* ═══════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {isResumeOpen && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          >
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setIsResumeOpen(false)}></div>
+            <motion.div
+              className="relative bg-surface dark:bg-zinc-900 border-4 border-on-background brutal-shadow w-full max-w-3xl h-[90vh] z-10 flex flex-col"
+              initial={{ scale: 2, opacity: 0, rotate: -10 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} exit={{ scale: 0.5, opacity: 0, rotate: 10 }} transition={{ type: "spring", damping: 20, stiffness: 120 }}
+            >
+              <div className="bg-primary-container text-on-primary-container p-4 border-b-4 border-on-background flex justify-between items-center gap-4">
+                <h2 className="font-headline-lg text-2xl uppercase m-0 leading-none truncate">RAGHAV_GANGWAR_RESUME</h2>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <a
+                    href="/resume.png"
+                    download="Raghav_Gangwar_Resume.png"
+                    className="bg-on-background text-white px-4 py-2 font-label-bold text-xs tracking-widest uppercase brutal-border brutal-shadow brutal-button-hover hover:bg-secondary transition-colors"
+                  >
+                    ⬇ DOWNLOAD
+                  </a>
+                  <button onClick={() => setIsResumeOpen(false)} className="bg-on-background text-white font-label-bold text-xl w-10 h-10 border-2 border-on-background flex items-center justify-center brutal-button-hover">✕</button>
+                </div>
+              </div>
+              <div className="flex-1 w-full bg-zinc-200 dark:bg-zinc-800 overflow-y-auto p-4 flex justify-center">
+                <img src="/resume.png" alt="Raghav Gangwar resume" className="w-full max-w-2xl h-auto object-contain border-2 border-on-background bg-white" />
               </div>
             </motion.div>
           </motion.div>
