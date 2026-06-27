@@ -1,76 +1,63 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion } from 'framer-motion';
 
-// Spring animation config reused across hero elements
-const springPop = (delay) => ({
-  initial: { scale: 0, opacity: 0 },
-  animate: { scale: 1, opacity: 1 },
-  transition: { type: 'spring', bounce: 0.2, duration: 0.8, delay },
-});
-
-// Manga panel placeholder data — 3 panels only
-const mangaPanels = [
-  { id: 1, gridArea: '1 / 1 / 3 / 2', label: 'CHAPTER 01' }, // tall left panel
-  { id: 2, gridArea: '1 / 2 / 2 / 3', label: 'CHAPTER 02' }, // top right
-  { id: 3, gridArea: '2 / 2 / 3 / 3', label: 'CHAPTER 03' }, // bottom right
+// Fallback content so the site never renders empty if the API is unreachable.
+// The live backend is the source of truth; this mirrors the seed data as a safety net.
+const FALLBACK_PROJECTS = [
+  {
+    _id: 'fb-imagix',
+    title: 'IMAGIX',
+    description: 'A powerful AI-driven image generation platform that transforms text prompts into stunning visuals. Leveraging cutting-edge generative models to create artwork, designs, and photorealistic images from natural language descriptions.',
+    techStack: ['NEXT.JS', 'AI/ML', 'TAILWIND'],
+    tags: ['AI', 'IMAGE-GEN'],
+    imageUrl: '/images/imagix-cover.png',
+    detailImageUrl: '/images/imagix-detail.png',
+    githubUrl: 'https://github.com/SheinRG/imagix',
+    liveUrl: 'https://imagix-three.vercel.app/',
+  },
+  {
+    _id: 'fb-coach',
+    title: 'AGENTIC INTERVIEW COACH',
+    description: 'Deployed a real-time AI agent leveraging Claude and Groq APIs to autonomously conduct role-specific interview simulations. Orchestrated a multi-API pipeline (Claude, ElevenLabs TTS, Web Speech API) with automated silence detection. Built an intelligent evaluation engine that analyzes behavioral signals and delivers granular performance metrics.',
+    techStack: ['REACT.JS', 'NODE.JS', 'GROQ API', 'ELEVENLABS', 'MONGOOSE'],
+    tags: ['AI/ML', 'VOICE-AI'],
+    imageUrl: '/images/orion-ai-cover.png',
+    detailImageUrl: '/images/orion-ai-cover.png',
+    githubUrl: 'https://github.com/SheinRG/didallfornothing-',
+    liveUrl: 'https://didallfornothing-client.vercel.app',
+  },
+  {
+    _id: 'fb-rag',
+    title: 'RAG DOCUMENT ANALYZER',
+    description: 'Engineered a production-grade Retrieval-Augmented Generation (RAG) pipeline from scratch ingesting PDFs via LangChain, chunking, and embedding into ChromaDB. Designed a FastAPI backend with async background workers and JWT-based auth deployed on Render with Docker. Integrated Groq API (LLaMA 3) with precision-engineered prompting and streaming SSE responses.',
+    techStack: ['FASTAPI', 'REACT.JS', 'LANGCHAIN', 'CHROMADB', 'PGVECTOR', 'DOCKER'],
+    tags: ['AI/ML', 'RAG', 'FULLSTACK'],
+    imageUrl: '/nexus-ai.png',
+    detailImageUrl: '/nexus-ai.png',
+    githubUrl: 'https://github.com/SheinRG/Rag',
+    liveUrl: 'https://nexus-ai-theta-seven.vercel.app/',
+  },
 ];
 
-// Static experience card placeholders
-const expCards = [
-  { id: 1, accentColor: 'bg-comicYellow' },
-  { id: 2, accentColor: 'bg-[#6dbbfc]' },
+const FALLBACK_EXPERIENCES = [
+  {
+    _id: 'fb-medulance',
+    title: 'FULL STACK ENGINEER INTERN @ MEDULANCE',
+    description: 'Developed RESTful APIs and database schemas using Node.js, Express.js, and MongoDB for healthcare application features, ensuring robust data persistence and API reliability. • Built responsive UI with React.js and Tailwind CSS, implemented secure user authentication using JWT tokens and bcrypt hashing for session management. • Collaborated with cross functional teams to validate technical requirements and ensure code quality through reviews and best practices documentation.',
+    projects: ['Healthcare Application Features', 'Secure User Authentication'],
+    certificateUrl: '/medulance.png',
+    colorTheme: 'blue',
+  },
+  {
+    _id: 'fb-codealpha',
+    title: 'WEB DEVELOPMENT INTERN (BACKEND) @ CODEALPHA',
+    description: 'Designed and deployed RESTful APIs with full CRUD operations using Node.js/Express.js following MVC architecture. Shipped a secure, end-to-end authentication system using JWT tokens and bcrypt hashing, forming an auth backbone reused across internal tools.',
+    projects: ['RESTful API Architecture', 'JWT Auth System'],
+    certificateUrl: '/codealpha.pdf',
+    colorTheme: 'yellow',
+  },
 ];
-
-const MangaPanel = ({ children, image, title, sub, className, side = 'left', delay = 0 }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: side === 'left' ? -100 : 100, rotate: side === 'left' ? -5 : 5 }}
-      whileInView={{ opacity: 1, x: 0, rotate: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ type: 'spring', bounce: 0.2, duration: 1, delay }}
-      className={`relative border-[8px] border-comicBlack dark:border-border bg-card shadow-[12px_12px_0_var(--border)] overflow-hidden group cursor-crosshair ${className}`}
-    >
-      <div className="absolute inset-0 z-0 bg-comicBlack/5 group-hover:bg-transparent transition-colors duration-500"></div>
-      {image && <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" />}
-
-      <div className="absolute inset-0 z-10 pointer-events-none p-4 flex flex-col justify-end bg-gradient-to-t from-comicBlack/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <h4 className="font-bangers text-2xl text-comicYellow tracking-widest leading-none drop-shadow-[2px_2px_0_#000]">{title}</h4>
-        <p className="font-comic font-bold text-xs text-white uppercase mt-1 tracking-tighter italic">{sub}</p>
-      </div>
-
-      {/* Comic Border Accents */}
-      <div className="absolute top-0 right-0 w-12 h-12 bg-comicBlack rotate-45 translate-x-6 -translate-y-6"></div>
-      <div className="absolute bottom-0 left-0 w-12 h-12 bg-comicBlack rotate-45 -translate-x-6 translate-y-6"></div>
-    </motion.div>
-  );
-};
-
-const SpeechBubble = ({ children, className, side = 'left', delay = 0 }) => (
-  <motion.div
-    initial={{ scale: 0, opacity: 0 }}
-    whileInView={{ scale: 1, opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ type: 'spring', bounce: 0.2, duration: 0.8, delay: delay + 0.5 }}
-    className={`absolute z-20 bg-card border-4 border-comicBlack dark:border-border p-4 shadow-[4px_4px_0_var(--border)] max-w-[200px] ${className}`}
-  >
-    <div className={`absolute bottom-[-16px] ${side === 'left' ? 'left-4' : 'right-4'} w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[16px] border-t-comicBlack`}></div>
-    <div className={`absolute bottom-[-10px] ${side === 'left' ? 'left-[18px]' : 'right-[18px]'} w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[12px] border-t-card`}></div>
-    <p className="font-comic font-bold text-sm tracking-tight leading-tight text-foreground uppercase italic">{children}</p>
-  </motion.div>
-);
-
-const SoundEffect = ({ children, className, delay = 0 }) => (
-  <motion.div
-    initial={{ scale: 0, rotate: -20, opacity: 0 }}
-    whileInView={{ scale: [0, 1.5, 1], rotate: [-20, 10, 0], opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.6, delay: delay + 0.3 }}
-    className={`absolute z-30 font-bangers text-4xl md:text-6xl tracking-widest italic antialiased drop-shadow-[4px_4px_0_var(--border)] pointer-events-none ${className}`}
-  >
-    {children}
-  </motion.div>
-);
 
 export default function PortfolioUI() {
   const [projects, setProjects] = useState([]);
@@ -84,9 +71,10 @@ export default function PortfolioUI() {
   const [isMessageSent, setIsMessageSent] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [actionWords, setActionWords] = useState([]);
   const [easterEggs, setEasterEggs] = useState([]);
   const [activeHero, setActiveHero] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
 
   const mouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
@@ -134,21 +122,6 @@ export default function PortfolioUI() {
   const expParallaxOdd = useTransform(smoothProgress, [0.3, 0.8], [0, -40]);
 
 
-  // Trigger floating action words (POW, ZAP, BOOM)
-  const triggerActionWord = (x, y) => {
-    const words = ['POW!', 'ZAP!', 'BOOM!', 'WHAM!', 'KAPOW!'];
-    const newWord = {
-      id: Date.now(),
-      text: words[Math.floor(Math.random() * words.length)],
-      x, y,
-      rotate: Math.random() * 40 - 20
-    };
-    setActionWords(prev => [...prev, newWord]);
-    setTimeout(() => {
-      setActionWords(prev => prev.filter(w => w.id !== newWord.id));
-    }, 1000);
-  };
-
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -185,19 +158,21 @@ export default function PortfolioUI() {
       }, 2500);
     };
 
-    // Show first hero immediately
-    const initTimeout = setTimeout(showRandomHero, 500);
+    // Respect users who prefer reduced motion — skip the popups entirely.
+    if (prefersReducedMotion) return;
 
-    // Then show one every 10 seconds
+    // First hero after a brief beat, then occasionally (every ~22s) so it
+    // stays a fun accent without interrupting someone reading the case studies.
+    const initTimeout = setTimeout(showRandomHero, 4000);
     const interval = setInterval(() => {
       showRandomHero();
-    }, 10000);
+    }, 22000);
 
     return () => {
       clearTimeout(initTimeout);
       clearInterval(interval);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
@@ -205,8 +180,10 @@ export default function PortfolioUI() {
       fetch(`${API_URL}/api/projects`).then(res => res.json()).catch(() => []),
       fetch(`${API_URL}/api/experiences`).then(res => res.json()).catch(() => [])
     ]).then(([projData, expData]) => {
-      setProjects(Array.isArray(projData) ? projData : []);
-      setExperiences(Array.isArray(expData) ? expData : []);
+      const proj = Array.isArray(projData) && projData.length ? projData : FALLBACK_PROJECTS;
+      const exp = Array.isArray(expData) && expData.length ? expData : FALLBACK_EXPERIENCES;
+      setProjects(proj);
+      setExperiences(exp);
       setLoading(false);
     });
   }, []);
@@ -239,30 +216,11 @@ export default function PortfolioUI() {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-500 bg-background text-foreground relative ${!isContactOpen && !isSecretIdentityOpen && !isPowersOpen && !selectedCertificateUrl ? 'cursor-crosshair' : ''}`}
-      onClick={(e) => triggerActionWord(e.clientX, e.clientY)}
+      className="min-h-screen transition-colors duration-500 bg-background text-foreground relative"
       onMouseMove={handleMouseMove}
     >
       {/* Full Page Halftone Grid Background with Parallax */}
       <motion.div className="fixed inset-0 halftone-bg opacity-[0.03] pointer-events-none z-0" style={{ y: gridY }}></motion.div>
-      {/* Floating Action Words Layer */}
-      <AnimatePresence>
-        {actionWords.map(word => (
-          <motion.div
-            key={word.id}
-            initial={{ scale: 0, opacity: 0, x: word.x - 50, y: word.y - 50 }}
-            animate={{ scale: 1.5, opacity: 1 }}
-            exit={{ scale: 2, opacity: 0 }}
-            className="fixed z-[100] pointer-events-none font-bangers text-4xl md:text-6xl text-comicYellow"
-            style={{
-              rotate: word.rotate,
-              textShadow: '4px 4px 0px var(--primary), 8px 8px 0px var(--border)'
-            }}
-          >
-            {word.text}
-          </motion.div>
-        ))}
-      </AnimatePresence>
 
       {/* TopNavBar */}
       <nav className="w-full sticky top-0 z-50 border-b-4 border-zinc-950 shadow-[0px_4px_0px_0px_rgba(255,222,0,1)] bg-white dark:bg-zinc-900 flex justify-between items-center h-20 px-6 md:px-12">
@@ -273,10 +231,34 @@ export default function PortfolioUI() {
           <button onClick={() => setIsPowersOpen(true)} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-2 brutal-border brutal-shadow hover:-translate-y-1 hover:bg-[#FFDE00] hover:text-zinc-950 transition-all duration-200 cursor-pointer">POWERS</button>
         </div>
 
-        <button className="md:hidden p-2 brutal-border bg-[#FFDE00] brutal-shadow">
-          <span className="font-bold text-zinc-950">MENU</span>
+        <button
+          onClick={() => setIsMobileMenuOpen(prev => !prev)}
+          aria-expanded={isMobileMenuOpen}
+          aria-label="Toggle navigation menu"
+          className="md:hidden p-2 brutal-border bg-[#FFDE00] brutal-shadow"
+        >
+          <span className="font-bold text-zinc-950">{isMobileMenuOpen ? 'CLOSE' : 'MENU'}</span>
         </button>
       </nav>
+
+      {/* Mobile Dropdown Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="md:hidden sticky top-20 z-40 overflow-hidden bg-white dark:bg-zinc-900 border-b-4 border-zinc-950 shadow-[0px_4px_0px_0px_rgba(255,222,0,1)]"
+          >
+            <div className="flex flex-col gap-3 p-6">
+              <button onClick={() => { setIsSecretIdentityOpen(true); setIsMobileMenuOpen(false); }} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-3 brutal-border brutal-shadow font-bold tracking-tighter uppercase text-left hover:bg-[#FFDE00] hover:text-zinc-950 transition-colors">ABOUT</button>
+              <button onClick={() => { setIsContactOpen(true); setIsMobileMenuOpen(false); }} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-3 brutal-border brutal-shadow font-bold tracking-tighter uppercase text-left hover:bg-[#FFDE00] hover:text-zinc-950 transition-colors">CONTACT</button>
+              <button onClick={() => { setIsPowersOpen(true); setIsMobileMenuOpen(false); }} className="bg-surface dark:bg-zinc-800 text-on-surface px-4 py-3 brutal-border brutal-shadow font-bold tracking-tighter uppercase text-left hover:bg-[#FFDE00] hover:text-zinc-950 transition-colors">POWERS</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="flex-grow w-full max-w-container-max mx-auto px-6 md:px-12 py-12 flex flex-col gap-24 relative z-10">
         {/* Hero Section */}
@@ -791,12 +773,12 @@ export default function PortfolioUI() {
                 <div className="bg-surface p-4 border-3 border-dashed border-on-background flex items-center justify-around relative overflow-hidden">
                   <div className="absolute inset-0 halftone-bg opacity-10"></div>
                   <div className="text-center relative z-10">
-                    <span className="font-headline-lg text-3xl block text-secondary">100%</span>
-                    <span className="font-label-bold text-xs text-on-background">DETERMINATION</span>
+                    <span className="font-headline-lg text-3xl block text-secondary">2</span>
+                    <span className="font-label-bold text-xs text-on-background">INTERNSHIPS</span>
                   </div>
                   <div className="text-center relative z-10">
-                    <span className="font-headline-lg text-3xl block text-primary">∞</span>
-                    <span className="font-label-bold text-xs text-on-background">IMAGINATION</span>
+                    <span className="font-headline-lg text-3xl block text-primary">3+</span>
+                    <span className="font-label-bold text-xs text-on-background">SHIPPED APPS</span>
                   </div>
                 </div>
               </div>
@@ -880,7 +862,7 @@ export default function PortfolioUI() {
           </motion.a>
         </div>
         <div className="font-label-bold font-medium text-xs uppercase tracking-widest text-zinc-400">
-          © 2024 HERO CREATIVE. ALL RIGHTS RESERVED.
+          © {new Date().getFullYear()} RAGHAV GANGWAR. BUILT WITH NEXT.JS.
         </div>
       </footer>
 
