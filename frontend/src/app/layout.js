@@ -19,7 +19,7 @@ const workSans = Work_Sans({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://raghavgangwar.com";
+const siteUrl = "https://portfolio-psi-three-1a18j4dae0.vercel.app";
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
