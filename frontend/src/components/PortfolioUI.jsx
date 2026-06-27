@@ -38,6 +38,28 @@ const FALLBACK_PROJECTS = [
     githubUrl: 'https://github.com/SheinRG/Rag',
     liveUrl: 'https://nexus-ai-theta-seven.vercel.app/',
   },
+  {
+    _id: 'fb-research-agent',
+    title: 'AI RESEARCH AGENT',
+    description: 'An autonomous, Perplexity-style research agent that decomposes a question into 2–4 parallel sub-queries, searches the web, neural re-ranks the sources, and streams back a fully cited answer with verifiable [n] markers. Built on a LangGraph agent pipeline with a two-tier LLM strategy — Llama 3.1 8B for fast triage/routing, Llama 3.3 70B for synthesis. Cut end-to-end latency from 35s to 4.5s (~87% faster) by collapsing the agent graph and fixing async bottlenecks, and hardened it with stateless JWT + Google OAuth, per-user rate limiting, and a single canonical source list so citations never drift.',
+    techStack: ['NEXT.JS', 'FASTAPI', 'LANGGRAPH', 'GROQ API', 'POSTGRESQL', 'DOCKER'],
+    tags: ['AI/ML', 'AGENTIC', 'RAG'],
+    imageUrl: '/images/research-agent-cover.png',
+    detailImageUrl: '/images/research-agent-cover.png',
+    githubUrl: 'https://github.com/SheinRG/AI-ResearchAgent',
+    liveUrl: 'https://ai-research-agent-gray.vercel.app',
+  },
+  {
+    _id: 'fb-amazonia',
+    title: 'AMAZÔNIA: LIVING ARCHIVE',
+    description: "An immersive, design-first single-page scrollytelling experience that takes you through the Amazon rainforest's keystone species. Features bioluminescent 3D scenes — a living hero, an interactive canopy, and a specimen gallery — built with Three.js via react-three-fiber, with scroll-driven animation choreographed in GSAP ScrollTrigger and an animated 'Lumen Tree'. Includes a searchable, filterable species atlas backed by IUCN Red List conservation data. Built with React 19, TypeScript, and Vite.",
+    techStack: ['REACT 19', 'TYPESCRIPT', 'THREE.JS', 'GSAP', 'TAILWIND', 'FRAMER MOTION'],
+    tags: ['3D / WEBGL', 'FRONTEND', 'CREATIVE'],
+    imageUrl: '/images/amazonia-cover.png',
+    detailImageUrl: '/images/amazonia-cover.png',
+    githubUrl: 'https://github.com/SheinRG/amazonia',
+    liveUrl: 'https://amazonia-hazel.vercel.app',
+  },
 ];
 
 const FALLBACK_EXPERIENCES = [
